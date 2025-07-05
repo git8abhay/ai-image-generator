@@ -1,3 +1,4 @@
+import { generateImage } from "./apiService";
 import React, { useState, useRef } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -7,16 +8,21 @@ const ImageGenerator = () => {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef();
 
-  const handleGenerate = () => {
-    const prompt = inputRef.current.value.trim();
-    if (!prompt) return;
+ const handleGenerate = async () => {
+  const prompt = inputRef.current.value.trim();
+  if (!prompt) return;
 
-    setLoading(true);
-    setTimeout(() => {
-      setImageUrl("https://via.placeholder.com/512x320?text=Generated+Image");
+   setLoading(true);
+    try {
+      const url = await generateImage(prompt); // ✅ use helper
+      setImageUrl(url);
+    } catch (err) {
+      alert("Something went wrong. Try again.");
+    } finally {
       setLoading(false);
-    }, 1500);
-  };
+    }
+};
+
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white flex flex-col items-center justify-center px-4 py-12">
